@@ -21,6 +21,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = __importStar(require("discord.js"));
 const wokcommands_1 = __importDefault(require("wokcommands"));
@@ -29,15 +30,31 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const client = new discord_js_1.default.Client({
     intents: [
+        discord_js_1.Intents.FLAGS.GUILDS,
         discord_js_1.Intents.FLAGS.GUILD_MESSAGES,
-        discord_js_1.Intents.FLAGS.GUILDS
-    ]
+        discord_js_1.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        discord_js_1.Intents.FLAGS.GUILD_MEMBERS,
+        discord_js_1.Intents.FLAGS.GUILD_INTEGRATIONS,
+        discord_js_1.Intents.FLAGS.GUILD_MESSAGE_TYPING
+    ],
 });
 client.on('ready', () => {
     console.log('The bot is ready!');
     new wokcommands_1.default(client, {
         commandsDir: path_1.default.join(__dirname, 'commands'),
-        typeScript: true
-    });
+        typeScript: true,
+        testServers: ['875594624712966184'],
+        botOwners: ['691506668781174824']
+    })
+        .setDefaultPrefix('d!');
 });
+const guildId = '875594624712966184';
+const guild = client.guilds.cache.get(guildId);
+let commands;
+if (guild) {
+    commands = guild.commands;
+}
+else {
+    commands = (_a = client.application) === null || _a === void 0 ? void 0 : _a.commands;
+}
 client.login(process.env.TOKEN);

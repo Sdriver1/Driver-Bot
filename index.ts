@@ -6,9 +6,13 @@ dotenv.config()
 
 const client = new DiscordJS.Client({
     intents: [
+        Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILDS
-    ]
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_INTEGRATIONS,
+        Intents.FLAGS.GUILD_MESSAGE_TYPING
+    ],
 })
 
 client.on('ready', () => {
@@ -16,8 +20,21 @@ client.on('ready', () => {
 
     new WOKCommands(client,{
 commandsDir: path.join(__dirname, 'commands'),
-typeScript: true
+typeScript: true,
+testServers: ['875594624712966184'],
+botOwners: ['691506668781174824']
     })
+    .setDefaultPrefix('d!')
 })
+
+const guildId = '875594624712966184'
+    const guild = client.guilds.cache.get(guildId)
+    let commands
+
+   if (guild) {
+      commands = guild.commands 
+   } else {
+       commands = client.application?.commands
+    }
 
 client.login(process.env.TOKEN)
